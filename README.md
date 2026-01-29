@@ -119,11 +119,12 @@ Navigate to `http://localhost:5000` in your browser
 
 ## Team & Acknowledgments
 
-- **Built for: ** Fortex 36
-- **Team Lead: ** Rohan Malyadri  
-- **Team: ** Kesava, Thanishker, Harinesh  
+- Built for: Fortex 36
+- Team Lead: Rohan Malyadri  
+- Team: Kesava, Thanishker, Harinesh  
 
 ---
 
 **Made with 💙 for Fortex36 by Team SynapseX**
+
 
