@@ -13,23 +13,6 @@ def is_blocked(ip):
     """Check if IP is blocked"""
     return ip in blocked_ips
 
-
-def is_rate_limited(ip):
-    """Check if IP is rate limited"""
-    return ip in rate_limited_ips
-
-
-def get_mitigation_stats():
-    """Get current mitigation statistics"""
-    return {
-        "blocked_ips": len(blocked_ips),
-        "rate_limited_ips": len(rate_limited_ips),
-        "blacklisted_sessions": len(session_blacklist),
-        "blocked_list": list(blocked_ips),
-        "rate_limited_list": list(rate_limited_ips.keys())
-    }
-
-
 def reset_mitigations():
     """Reset all mitigation states (for testing)"""
     blocked_ips.clear()
