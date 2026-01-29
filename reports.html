@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Security Reports - Command Center</title>
+    <script src="/static/js/tailwind.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-dark": "#0b0e14",
+                        "surface-dark": "#161b22",
+                        "neon-red": "#ff4d4d",
+                        "neon-amber": "#ffb000",
+                        "neon-green": "#00ff9d"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-white min-h-screen">
+    <header class="border-b border-white/10 bg-background-dark px-8 py-3 sticky top-0 z-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined">shield_with_heart</span>
+                    </div>
+                    <h1 class="text-xl font-bold">Security Command Center</h1>
+                </div>
+                <nav class="flex items-center gap-6">
+                    <a class="text-slate-500 hover:text-white text-sm" href="/">Dashboard</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/alerts.html">Alerts</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/mitigations.html">Mitigations</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/assets.html">Assets</a>
+                    <a class="text-primary font-semibold text-sm" href="/reports.html">Reports</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/users.html">Instances</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/models.html">ML Models</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-8 max-w-[1600px] mx-auto">
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold mb-2">📊 Security Analytics & Reports</h1>
+            <p class="text-slate-400">Comprehensive threat intelligence and performance metrics</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Threats Blocked (24h)</div>
+                <div class="text-3xl font-bold text-neon-green" id="blocked-24h">0</div>
+                <div class="text-xs text-slate-500 mt-2">↑ 15% from yesterday</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Detection Accuracy</div>
+                <div class="text-3xl font-bold text-primary">94.8%</div>
+                <div class="text-xs text-slate-500 mt-2">AI models performing optimally</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Avg Response Time</div>
+                <div class="text-3xl font-bold text-neon-amber">42ms</div>
+                <div class="text-xs text-slate-500 mt-2">Real-time threat detection</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">False Positives</div>
+                <div class="text-3xl font-bold text-neon-red">2.1%</div>
+                <div class="text-xs text-slate-500 mt-2">Industry leading rate</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <!-- Threat Distribution -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <h2 class="text-lg font-bold mb-4">Threat Type Distribution</h2>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>DoS Attacks</span>
+                            <span class="text-neon-red">42%</span>
+                        </div>
+                        <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                            <div class="bg-neon-red h-full" style="width: 42%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Exploits</span>
+                            <span class="text-neon-amber">28%</span>
+                        </div>
+                        <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                            <div class="bg-neon-amber h-full" style="width: 28%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Reconnaissance</span>
+                            <span class="text-primary">18%</span>
+                        </div>
+                        <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full" style="width: 18%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Backdoor Attempts</span>
+                            <span class="text-neon-green">8%</span>
+                        </div>
+                        <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                            <div class="bg-neon-green h-full" style="width: 8%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Other</span>
+                            <span class="text-slate-400">4%</span>
+                        </div>
+                        <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                            <div class="bg-slate-400 h-full" style="width: 4%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geographic Distribution -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <h2 class="text-lg font-bold mb-4">Top Attack Origins</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 bg-neon-red/20 rounded-lg flex items-center justify-center text-neon-red font-bold">
+                                RU</div>
+                            <div>
+                                <div class="font-semibold">Russia</div>
+                                <div class="text-xs text-slate-500">Moscow, St Petersburg</div>
+                            </div>
+                        </div>
+                        <div class="text-neon-red font-bold">38%</div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 bg-neon-amber/20 rounded-lg flex items-center justify-center text-neon-amber font-bold">
+                                CN</div>
+                            <div>
+                                <div class="font-semibold">China</div>
+                                <div class="text-xs text-slate-500">Beijing, Shanghai</div>
+                            </div>
+                        </div>
+                        <div class="text-neon-amber font-bold">24%</div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 bg-primary/20 rounded-lg flex items-center justify-center text-primary font-bold">
+                                US</div>
+                            <div>
+                                <div class="font-semibold">United States</div>
+                                <div class="text-xs text-slate-500">Various compromised hosts</div>
+                            </div>
+                        </div>
+                        <div class="text-primary font-bold">16%</div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 bg-neon-green/20 rounded-lg flex items-center justify-center text-neon-green font-bold">
+                                BR</div>
+                            <div>
+                                <div class="font-semibold">Brazil</div>
+                                <div class="text-xs text-slate-500">São Paulo, Rio</div>
+                            </div>
+                        </div>
+                        <div class="text-neon-green font-bold">12%</div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 bg-slate-500/20 rounded-lg flex items-center justify-center text-slate-400 font-bold">
+                                OT</div>
+                            <div>
+                                <div class="font-semibold">Others</div>
+                                <div class="text-xs text-slate-500">Various countries</div>
+                            </div>
+                        </div>
+                        <div class="text-slate-400 font-bold">10%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Timeline -->
+        <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+            <h2 class="text-lg font-bold mb-4">Last 7 Days Activity</h2>
+            <div class="h-64 flex items-end justify-between gap-2">
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/20 hover:bg-primary/30 transition-colors rounded-t"
+                        style="height: 45%"></div>
+                    <span class="text-xs text-slate-500">Mon</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/20 hover:bg-primary/30 transition-colors rounded-t"
+                        style="height: 62%"></div>
+                    <span class="text-xs text-slate-500">Tue</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/20 hover:bg-primary/30 transition-colors rounded-t"
+                        style="height: 38%"></div>
+                    <span class="text-xs text-slate-500">Wed</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/20 hover:bg-primary/30 transition-colors rounded-t"
+                        style="height: 78%"></div>
+                    <span class="text-xs text-slate-500">Thu</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/20 hover:bg-primary/30 transition-colors rounded-t"
+                        style="height: 54%"></div>
+                    <span class="text-xs text-slate-500">Fri</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/20 hover:bg-primary/30 transition-colors rounded-t"
+                        style="height: 88%"></div>
+                    <span class="text-xs text-slate-500">Sat</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-neon-green rounded-t" style="height: 100%"></div>
+                    <span class="text-xs text-slate-500 font-bold">Today</span>
+                </div>
+            </div>
+            <div class="mt-4 text-center text-sm text-slate-500">
+                Peak activity detected on weekends | Average: 1,284 threats/day
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        async function updateReportStats() {
+            try {
+                const response = await fetch(`${API_BASE}/api/logs/threat?lines=100`);
+                const data = await response.json();
+
+                if (data.entries) {
+                    document.getElementById('blocked-24h').textContent = data.entries.length;
+                }
+            } catch (error) {
+                console.error('Error updating reports:', error);
+            }
+        }
+
+        // Auto-refresh every 5 seconds
+        setInterval(updateReportStats, 5000);
+        updateReportStats();
+    </script>
+</body>
+
+</html>

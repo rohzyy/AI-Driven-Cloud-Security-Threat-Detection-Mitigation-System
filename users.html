@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Instances Management - Command Center</title>
+    <script src="/static/js/tailwind.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-dark": "#0b0e14",
+                        "surface-dark": "#161b22",
+                        "neon-red": "#ff4d4d",
+                        "neon-amber": "#ffb000",
+                        "neon-green": "#00ff9d"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-white min-h-screen">
+    <header class="border-b border-white/10 bg-background-dark px-8 py-3 sticky top-0 z-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined">shield_with_heart</span>
+                    </div>
+                    <h1 class="text-xl font-bold">Security Command Center</h1>
+                </div>
+                <nav class="flex items-center gap-6">
+                    <a class="text-slate-500 hover:text-white text-sm" href="/">Dashboard</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/alerts.html">Alerts</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/mitigations.html">Mitigations</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/assets.html">Assets</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/reports.html">Reports</a>
+                    <a class="text-primary font-semibold text-sm" href="/users.html">Instances</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/models.html">ML Models</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-8 max-w-[1600px] mx-auto">
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold mb-2">☁️ Instances Management</h1>
+            <p class="text-slate-400">Manage and monitor cloud instances running threat detection</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Total Instances</div>
+                <div class="text-3xl font-bold text-white" id="total-devices">0</div>
+                <div class="text-xs text-slate-500 mt-2">Registered instances</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Online</div>
+                <div class="text-3xl font-bold text-neon-green" id="online-devices">0</div>
+                <div class="text-xs text-slate-500 mt-2">Active connections</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Offline</div>
+                <div class="text-3xl font-bold text-slate-400" id="offline-devices">0</div>
+                <div class="text-xs text-slate-500 mt-2">Inactive instances</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Total Threats</div>
+                <div class="text-3xl font-bold text-neon-red" id="total-threats">0</div>
+                <div class="text-xs text-slate-500 mt-2">Detected across all instances</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6">
+            <!-- Device Registration Form -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">add_circle</span>
+                    Add New Instance / Device
+                </h2>
+                <form id="device-form" class="space-y-4">
+                    <div>
+                        <label class="text-sm text-slate-400 block mb-1">Instance Name</label>
+                        <input type="text" id="device-name" required
+                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
+                            placeholder="Our Instance" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-400 block mb-1">IP Address</label>
+                        <input type="text" id="ip-address" required
+                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
+                            placeholder="192.168.1.100" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-400 block mb-1">SSH Port</label>
+                        <input type="number" id="port" value="8022"
+                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
+                            placeholder="8022" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-400 block mb-1">Username</label>
+                        <input type="text" id="username" required
+                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
+                            placeholder="termux" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-400 block mb-1">Password</label>
+                        <input type="password" id="password" required
+                            class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
+                            placeholder="********" />
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">cloud</span>
+                        Register Instance
+                    </button>
+                </form>
+                <div id="form-message" class="mt-4 text-sm hidden"></div>
+            </div>
+
+            <!-- Registered Devices List -->
+            <div class="col-span-2 bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-neon-green">cloud_queue</span>
+                        Registered Instances
+                    </h2>
+                    <button onclick="refreshDevices()"
+                        class="text-sm bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">refresh</span>
+                        Refresh
+                    </button>
+                </div>
+
+                <div id="devices-list" class="space-y-3 max-h-[600px] overflow-y-auto">
+                    <!-- Devices will be loaded here dynamically -->
+                    <div class="text-center text-slate-500 py-8">
+                        <span class="material-symbols-outlined text-4xl mb-2 block">cloud_off</span>
+                        No instances registered yet
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Trigger Payload Modal -->
+    <div id="trigger-modal"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-surface-dark border border-white/10 rounded-xl p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">🎯 Trigger Test Payload</h3>
+                <button onclick="closeTriggerModal()" class="text-slate-400 hover:text-white">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="mb-4">
+                <p class="text-sm text-slate-400 mb-2">Target Instance: <span id="modal-device-name"
+                        class="text-white font-semibold"></span></p>
+                <p class="text-xs text-slate-500">Select an attack type to trigger a test payload and observe automated
+                    mitigation</p>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <button onclick="triggerPayload('dos')"
+                    class="w-full bg-neon-red/20 hover:bg-neon-red/30 border border-neon-red/50 text-white p-4 rounded-lg transition-all text-left">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-neon-red">warning</span>
+                        <div>
+                            <div class="font-bold">DoS Attack</div>
+                            <div class="text-xs text-slate-400">High traffic rate, large bytes</div>
+                        </div>
+                    </div>
+                </button>
+
+                <button onclick="triggerPayload('exploit')"
+                    class="w-full bg-neon-amber/20 hover:bg-neon-amber/30 border border-neon-amber/50 text-white p-4 rounded-lg transition-all text-left">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-neon-amber">bug_report</span>
+                        <div>
+                            <div class="font-bold">Exploit Attack</div>
+                            <div class="text-xs text-slate-400">Large packet sizes, TCP exploits</div>
+                        </div>
+                    </div>
+                </button>
+
+                <button onclick="triggerPayload('reconnaissance')"
+                    class="w-full bg-primary/20 hover:bg-primary/30 border border-primary/50 text-white p-4 rounded-lg transition-all text-left">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">radar</span>
+                        <div>
+                            <div class="font-bold">Reconnaissance/Port Scan</div>
+                            <div class="text-xs text-slate-400">High connection attempts</div>
+                        </div>
+                    </div>
+                </button>
+
+                <button onclick="triggerPayload('backdoor')"
+                    class="w-full bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-white p-4 rounded-lg transition-all text-left">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-purple-400">vpn_key</span>
+                        <div>
+                            <div class="font-bold">Backdoor</div>
+                            <div class="text-xs text-slate-400">Long duration, large traffic</div>
+                        </div>
+                    </div>
+                </button>
+
+                <button onclick="triggerPayload('normal')"
+                    class="w-full bg-neon-green/20 hover:bg-neon-green/30 border border-neon-green/50 text-white p-4 rounded-lg transition-all text-left">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-neon-green">check_circle</span>
+                        <div>
+                            <div class="font-bold">Normal Traffic</div>
+                            <div class="text-xs text-slate-400">Benign network activity</div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let devices = [];
+
+        // Load devices on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshDevices();
+            // Auto-refresh every 10 seconds
+            setInterval(refreshDevices, 10000);
+        });
+
+        // Handle form submission
+        document.getElementById('device-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const deviceData = {
+                device_name: document.getElementById('device-name').value,
+                ip_address: document.getElementById('ip-address').value,
+                port: parseInt(document.getElementById('port').value),
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/users`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(deviceData)
+                });
+
+                const result = await response.json();
+
+                const messageEl = document.getElementById('form-message');
+                if (result.success) {
+                    messageEl.className = 'mt-4 text-sm text-neon-green border border-neon-green/30 bg-neon-green/10 p-3 rounded-lg';
+                    messageEl.textContent = '✅ Instance registered successfully!';
+                    messageEl.classList.remove('hidden');
+
+                    // Clear form
+                    document.getElementById('device-form').reset();
+                    document.getElementById('port').value = '8022';
+
+                    // Refresh device list
+                    setTimeout(() => {
+                        refreshDevices();
+                        messageEl.classList.add('hidden');
+                    }, 2000);
+                } else {
+                    messageEl.className = 'mt-4 text-sm text-neon-red border border-neon-red/30 bg-neon-red/10 p-3 rounded-lg';
+                    messageEl.textContent = `❌ Error: ${result.error}`;
+                    messageEl.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error registering device:', error);
+                const messageEl = document.getElementById('form-message');
+                messageEl.className = 'mt-4 text-sm text-neon-red border border-neon-red/30 bg-neon-red/10 p-3 rounded-lg';
+                messageEl.textContent = `❌ Failed to connect to server`;
+                messageEl.classList.remove('hidden');
+            }
+        });
+
+        // Refresh devices list
+        async function refreshDevices() {
+            try {
+                const response = await fetch(`${API_BASE}/api/users`);
+                const data = await response.json();
+
+                if (data.success) {
+                    devices = data.devices;
+                    renderDevices(devices);
+                    updateStatistics();
+                }
+            } catch (error) {
+                console.error('Error loading devices:', error);
+            }
+        }
+
+        // Render devices list
+        function renderDevices(devicesList) {
+            const container = document.getElementById('devices-list');
+
+            if (devicesList.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-slate-500 py-8">
+                        <span class="material-symbols-outlined text-4xl mb-2 block">cloud_off</span>
+                        No instances registered yet
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = devicesList.map(device => {
+                const statusColor = device.status === 'online' ? 'neon-green' : 'slate-400';
+                const statusIcon = device.status === 'online' ? 'check_circle' : 'circle';
+                const lastSeen = new Date(device.last_seen).toLocaleString();
+
+                return `
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-4 hover:border-primary/30 transition-all cursor-pointer" onclick="viewInstanceDetails('${device.device_id}')">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="size-12 bg-primary/20 rounded-lg flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary">cloud</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-white">${device.device_name}</div>
+                                    <div class="text-xs text-slate-500">${device.ip_address}:${device.port}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-${statusColor}">${statusIcon}</span>
+                                <span class="text-xs text-${statusColor} font-semibold uppercase">${device.status}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3 mb-3 text-xs">
+                            <div>
+                                <div class="text-slate-500">Username</div>
+                                <div class="text-white font-mono">${device.username}</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-500">Last Seen</div>
+                                <div class="text-white">${lastSeen}</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-500">Threats Detected</div>
+                                <div class="text-neon-red font-bold">${device.metrics?.threats_detected || 0}</div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button onclick="event.stopPropagation(); viewInstanceDetails('${device.device_id}')"
+                                class="flex-1 bg-primary hover:bg-primary/90 text-white text-xs py-2 rounded transition-all flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-sm">visibility</span>
+                                View Details
+                            </button>
+                            <button onclick="event.stopPropagation(); showTriggerPayloadModal('${device.device_id}', '${device.device_name}')"
+                                class="flex-1 bg-neon-red/20 hover:bg-neon-red/30 text-neon-red text-xs py-2 rounded transition-all flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-sm">bolt</span>
+                                Trigger Payload
+                            </button>
+                            <button onclick="event.stopPropagation(); deleteDevice('${device.device_id}')"
+                                class="bg-slate-600/20 hover:bg-slate-600/30 text-slate-400 text-xs px-4 py-2 rounded transition-all flex items-center justify-center">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update statistics
+        async function updateStatistics() {
+            try {
+                const response = await fetch(`${API_BASE}/api/users/stats`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.statistics;
+                    document.getElementById('total-devices').textContent = stats.total_devices;
+                    document.getElementById('online-devices').textContent = stats.online;
+                    document.getElementById('offline-devices').textContent = stats.offline;
+                    document.getElementById('total-threats').textContent = stats.total_threats;
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Test connection to device
+        async function testConnection(deviceId) {
+            const device = devices.find(d => d.device_id === deviceId);
+            if (!device) return;
+
+            alert(`Testing connection to ${device.device_name} (${device.ip_address})...\n\nThis is a placeholder. In production, this would SSH into the device.`);
+
+            // Update status to online (placeholder)
+            try {
+                await fetch(`${API_BASE}/api/users/${deviceId}/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'online' })
+                });
+                refreshDevices();
+            } catch (error) {
+                console.error('Error updating status:', error);
+            }
+        }
+
+        // Delete device
+        async function deleteDevice(deviceId) {
+            const device = devices.find(d => d.device_id === deviceId);
+            if (!device) return;
+
+            if (!confirm(`Are you sure you want to delete instance "${device.device_name}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/users/${deviceId}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    refreshDevices();
+                } else {
+                    alert(`Error: ${result.error}`);
+                }
+            } catch (error) {
+                console.error('Error deleting device:', error);
+                alert('Failed to delete instance');
+            }
+        }
+
+        // Navigate to instance detail page
+        function viewInstanceDetails(deviceId) {
+            window.location.href = `/instance-detail.html?id=${deviceId}`;
+        }
+
+        // Trigger payload modal
+        let currentDeviceId = null;
+
+        function showTriggerPayloadModal(deviceId, deviceName) {
+            currentDeviceId = deviceId;
+            document.getElementById('modal-device-name').textContent = deviceName;
+            document.getElementById('trigger-modal').classList.remove('hidden');
+        }
+
+        function closeTriggerModal() {
+            document.getElementById('trigger-modal').classList.add('hidden');
+            currentDeviceId = null;
+        }
+
+        async function triggerPayload(attackType) {
+            if (!currentDeviceId) return;
+
+            // Close modal
+            closeTriggerModal();
+
+            // Show loading notification
+            const messageEl = document.createElement('div');
+            messageEl.className = 'fixed top-4 right-4 z-50 bg-primary border border-primary/50 text-white p-4 rounded-lg shadow-xl';
+            messageEl.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="animate-spin">
+                        <span class="material-symbols-outlined">sync</span>
+                    </div>
+                    <div>
+                        <div class="font-bold">Triggering ${attackType.toUpperCase()} payload...</div>
+                        <div class="text-xs text-slate-300">Please wait</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(messageEl);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/users/${currentDeviceId}/trigger-payload`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ attack_type: attackType })
+                });
+
+                const result = await response.json();
+
+                // Remove loading message
+                document.body.removeChild(messageEl);
+
+                if (result.success) {
+                    // Show success message
+                    const successEl = document.createElement('div');
+                    const isAttack = result.status === 'THREAT';
+                    const bgColor = isAttack ? 'neon-red' : 'neon-green';
+
+                    successEl.className = `fixed top-4 right-4 z-50 bg-${bgColor}/20 border border-${bgColor}/50 text-white p-4 rounded-lg shadow-xl max-w-md`;
+                    successEl.innerHTML = `
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-${bgColor}">${isAttack ? 'warning' : 'check_circle'}</span>
+                            <div class="flex-1">
+                                <div class="font-bold mb-1">✅ ${result.message}</div>
+                                ${isAttack ? `
+                                    <div class="text-xs text-slate-300 space-y-1">
+                                        <div>🎯 Attack Type: <span class="text-${bgColor} font-semibold">${result.detection_result.attack_type}</span></div>
+                                        <div>📊 Confidence: <span class="text-${bgColor} font-semibold">${(result.detection_result.confidence * 100).toFixed(1)}%</span></div>
+                                        <div>🛡️ Mitigation: <span class="text-neon-amber font-semibold">${result.mitigation.action}</span></div>
+                                    </div>
+                                ` : `
+                                    <div class="text-xs text-slate-300">No threats detected, traffic is normal.</div>
+                                `}
+                                <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='/instance-detail.html?id=${currentDeviceId}'" 
+                                    class="mt-2 text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded transition-all">
+                                    View Details →
+                                </button>
+                            </div>
+                            <button onclick="this.parentElement.parentElement.remove()" class="text-slate-400 hover:text-white">
+                                <span class="material-symbols-outlined text-sm">close</span>
+                            </button>
+                        </div>
+                    `;
+                    document.body.appendChild(successEl);
+
+                    // Auto-remove after 10 seconds
+                    setTimeout(() => {
+                        if (successEl.parentElement) {
+                            successEl.remove();
+                        }
+                    }, 10000);
+
+                    // Refresh devices list
+                    refreshDevices();
+                } else {
+                    alert(`Error: ${result.error || 'Failed to trigger payload'}`);
+                }
+            } catch (error) {
+                // Remove loading message
+                if (messageEl.parentElement) {
+                    document.body.removeChild(messageEl);
+                }
+                console.error('Error triggering payload:', error);
+                alert('Failed to trigger payload. Please check the console for details.');
+            }
+        }
+    </script>
+</body>
+
+</html>

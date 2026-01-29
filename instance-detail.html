@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Instance Details - Command Center</title>
+    <script src="/static/js/tailwind.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-dark": "#0b0e14",
+                        "surface-dark": "#161b22",
+                        "neon-red": "#ff4d4d",
+                        "neon-amber": "#ffb000",
+                        "neon-green": "#00ff9d"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-white min-h-screen">
+    <header class="border-b border-white/10 bg-background-dark px-8 py-3 sticky top-0 z-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined">shield_with_heart</span>
+                    </div>
+                    <h1 class="text-xl font-bold">Security Command Center</h1>
+                </div>
+                <nav class="flex items-center gap-6">
+                    <a class="text-slate-500 hover:text-white text-sm" href="/">Dashboard</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/alerts.html">Alerts</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/mitigations.html">Mitigations</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/assets.html">Assets</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/reports.html">Reports</a>
+                    <a class="text-primary font-semibold text-sm" href="/users.html">Instances</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/models.html">ML Models</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-8 max-w-[1600px] mx-auto">
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 text-sm text-slate-400 mb-6">
+            <a href="/users.html" class="hover:text-white transition-colors">Instances</a>
+            <span class="material-symbols-outlined !text-sm">chevron_right</span>
+            <span class="text-white" id="breadcrumb-instance">Instance Details</span>
+        </div>
+
+        <!-- Instance Header -->
+        <div class="mb-6 flex items-start justify-between">
+            <div class="flex items-center gap-4">
+                <div class="size-16 bg-primary/20 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary !text-4xl">cloud</span>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold mb-1" id="instance-name">Loading...</h1>
+                    <p class="text-slate-400" id="instance-ip">IP: ---.---.---.---</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="material-symbols-outlined text-sm" id="status-icon">circle</span>
+                        <span class="text-xs font-semibold uppercase" id="status-text">Offline</span>
+                        <span class="text-xs text-slate-500" id="last-seen">Last seen: Never</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="refreshInstance()"
+                    class="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">refresh</span>
+                    Refresh
+                </button>
+                <button onclick="testConnection()"
+                    class="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-lg transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">wifi_find</span>
+                    Test Connection
+                </button>
+            </div>
+        </div>
+
+        <!-- Trigger Payload Section -->
+        <div class="mb-6 bg-gradient-to-r from-neon-red/10 to-primary/10 border border-neon-red/30 rounded-xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-neon-red">bolt</span>
+                        Trigger Test Payload
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">Send test attack payloads and observe automated mitigation
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-5 gap-3">
+                <button onclick="triggerInstancePayload('dos')"
+                    class="bg-neon-red/20 hover:bg-neon-red/30 border border-neon-red/50 text-white py-3 px-4 rounded-lg transition-all">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined mb-1">warning</span>
+                        <div class="text-xs font-bold">DoS</div>
+                    </div>
+                </button>
+                <button onclick="triggerInstancePayload('exploit')"
+                    class="bg-neon-amber/20 hover:bg-neon-amber/30 border border-neon-amber/50 text-white py-3 px-4 rounded-lg transition-all">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined mb-1">bug_report</span>
+                        <div class="text-xs font-bold">Exploit</div>
+                    </div>
+                </button>
+                <button onclick="triggerInstancePayload('reconnaissance')"
+                    class="bg-primary/20 hover:bg-primary/30 border border-primary/50 text-white py-3 px-4 rounded-lg transition-all">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined mb-1">radar</span>
+                        <div class="text-xs font-bold">Recon</div>
+                    </div>
+                </button>
+                <button onclick="triggerInstancePayload('backdoor')"
+                    class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-white py-3 px-4 rounded-lg transition-all">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined mb-1">vpn_key</span>
+                        <div class="text-xs font-bold">Backdoor</div>
+                    </div>
+                </button>
+                <button onclick="triggerInstancePayload('normal')"
+                    class="bg-neon-green/20 hover:bg-neon-green/30 border border-neon-green/50 text-white py-3 px-4 rounded-lg transition-all">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined mb-1">check_circle</span>
+                        <div class="text-xs font-bold">Normal</div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Workflow Visualization -->
+            <div id="workflow-display" class="hidden mt-4 grid grid-cols-3 gap-4">
+                <div id="step-payload" class="bg-primary/20 border border-primary/50 rounded-lg p-4 text-center">
+                    <span class="material-symbols-outlined text-4xl text-primary mb-2">send</span>
+                    <div class="text-sm font-bold">Payload Sent</div>
+                    <div class="text-xs text-slate-400 mt-1" id="payload-info">-</div>
+                </div>
+                <div id="step-detection" class="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
+                    <span class="material-symbols-outlined text-4xl text-slate-500 mb-2">search</span>
+                    <div class="text-sm font-bold text-slate-500">Threat Detection</div>
+                    <div class="text-xs text-slate-400 mt-1" id="detection-info">-</div>
+                </div>
+                <div id="step-mitigation" class="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
+                    <span class="material-symbols-outlined text-4xl text-slate-500 mb-2">shield</span>
+                    <div class="text-sm font-bold text-slate-500">Mitigation</div>
+                    <div class="text-xs text-slate-400 mt-1" id="mitigation-info">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Total Requests</div>
+                <div class="text-3xl font-bold text-white" id="total-requests">0</div>
+                <div class="text-xs text-slate-500 mt-2">All time activity</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Threats Detected</div>
+                <div class="text-3xl font-bold text-neon-red" id="threats-detected">0</div>
+                <div class="text-xs text-slate-500 mt-2">Security incidents</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Mitigations Applied</div>
+                <div class="text-3xl font-bold text-neon-amber" id="mitigations-applied">0</div>
+                <div class="text-xs text-slate-500 mt-2">Actions taken</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Uptime</div>
+                <div class="text-3xl font-bold text-neon-green" id="uptime">99%</div>
+                <div class="text-xs text-slate-500 mt-2">Last 30 days</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6">
+            <!-- Live Traffic Monitor -->
+            <div class="col-span-2 bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">monitoring</span>
+                        Live Traffic Monitor
+                    </h2>
+                    <span
+                        class="text-xs bg-neon-green/20 text-neon-green px-3 py-1 rounded-full font-semibold">LIVE</span>
+                </div>
+
+                <div id="traffic-list" class="space-y-2 max-h-[400px] overflow-y-auto">
+                    <div class="text-center text-slate-500 py-8">
+                        <span class="material-symbols-outlined text-4xl mb-2 block">network_check</span>
+                        No traffic data available
+                    </div>
+                </div>
+            </div>
+
+            <!-- Running Applications -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-neon-green">apps</span>
+                    Running Services
+                </h2>
+                <div id="applications-list" class="space-y-3">
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="size-8 bg-primary/20 rounded flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary !text-sm">terminal</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-bold">Threat Detector</div>
+                                <div class="text-xs text-slate-500">Port 5000</div>
+                            </div>
+                            <div class="size-2 bg-neon-green rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="size-8 bg-neon-amber/20 rounded flex items-center justify-center">
+                                <span class="material-symbols-outlined text-neon-amber !text-sm">database</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-bold">Log Collector</div>
+                                <div class="text-xs text-slate-500">Background</div>
+                            </div>
+                            <div class="size-2 bg-neon-green rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="size-8 bg-neon-red/20 rounded flex items-center justify-center">
+                                <span class="material-symbols-outlined text-neon-red !text-sm">security</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-bold">Firewall Monitor</div>
+                                <div class="text-xs text-slate-500">System</div>
+                            </div>
+                            <div class="size-2 bg-neon-green rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Threats Timeline -->
+        <div class="mt-6 bg-surface-dark border border-white/5 rounded-xl p-6">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-neon-red">warning</span>
+                Recent Threats
+            </h2>
+            <div id="threats-timeline" class="space-y-3 max-h-[300px] overflow-y-auto">
+                <div class="text-center text-slate-500 py-8">
+                    <span class="material-symbols-outlined text-4xl mb-2 block">verified_user</span>
+                    No threats detected
+                </div>
+            </div>
+        </div>
+
+        <!-- Applied Mitigations -->
+        <div class="mt-6 bg-surface-dark border border-white/5 rounded-xl p-6">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-neon-amber">shield</span>
+                Applied Mitigations
+            </h2>
+            <div id="mitigations-list" class="space-y-3 max-h-[300px] overflow-y-auto">
+                <div class="text-center text-slate-500 py-8">
+                    <span class="material-symbols-outlined text-4xl mb-2 block">shield_with_house</span>
+                    No mitigations applied yet
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let instanceId = null;
+        let instanceData = null;
+
+        // Get instance ID from URL
+        function getInstanceIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        // Load instance details
+        async function loadInstanceDetails() {
+            instanceId = getInstanceIdFromURL();
+
+            if (!instanceId) {
+                alert('No instance ID provided');
+                window.location.href = '/users.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/users/${instanceId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    instanceData = data.device;
+                    updateInstanceHeader();
+                    updateStatistics();
+                    loadTrafficData();
+                    loadThreats();
+                    loadMitigations();
+                } else {
+                    alert('Instance not found');
+                    window.location.href = '/users.html';
+                }
+            } catch (error) {
+                console.error('Error loading instance:', error);
+            }
+        }
+
+        // Update header information
+        function updateInstanceHeader() {
+            document.getElementById('instance-name').textContent = instanceData.device_name;
+            document.getElementById('instance-ip').textContent = `IP: ${instanceData.ip_address}:${instanceData.port}`;
+            document.getElementById('breadcrumb-instance').textContent = instanceData.device_name;
+
+            const statusIcon = document.getElementById('status-icon');
+            const statusText = document.getElementById('status-text');
+            const lastSeen = document.getElementById('last-seen');
+
+            if (instanceData.status === 'online') {
+                statusIcon.className = 'material-symbols-outlined text-sm text-neon-green';
+                statusText.className = 'text-xs font-semibold uppercase text-neon-green';
+                statusText.textContent = 'Online';
+            } else {
+                statusIcon.className = 'material-symbols-outlined text-sm text-slate-400';
+                statusText.className = 'text-xs font-semibold uppercase text-slate-400';
+                statusText.textContent = 'Offline';
+            }
+
+            lastSeen.textContent = `Last seen: ${new Date(instanceData.last_seen).toLocaleString()}`;
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const metrics = instanceData.metrics || {};
+            document.getElementById('total-requests').textContent = metrics.total_requests || 0;
+            document.getElementById('threats-detected').textContent = metrics.threats_detected || 0;
+            document.getElementById('mitigations-applied').textContent = metrics.mitigations_applied || 0;
+            document.getElementById('uptime').textContent = (metrics.uptime || 99) + '%';
+        }
+
+        // Load traffic data from backend
+        async function loadTrafficData() {
+            const trafficList = document.getElementById('traffic-list');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/users/${instanceId}/activity?lines=10`);
+                const data = await response.json();
+
+                if (data.success && data.entries.length > 0) {
+                    trafficList.innerHTML = data.entries.map(entry => {
+                        return `
+                            <div class="bg-white/5 border border-white/10 rounded-lg p-3 hover:border-primary/30 transition-all">
+                                <div class="text-xs font-mono text-slate-300">${entry}</div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    trafficList.innerHTML = `
+                        <div class="text-center text-slate-500 py-8">
+                            <span class="material-symbols-outlined text-4xl mb-2 block">network_check</span>
+                            No traffic data available
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading traffic:', error);
+            }
+        }
+
+        // Load threats from backend
+        async function loadThreats() {
+            const threatsList = document.getElementById('threats-timeline');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/users/${instanceId}/threats?lines=10`);
+                const data = await response.json();
+
+                if (data.success && data.entries.length > 0) {
+                    threatsList.innerHTML = data.entries.map(entry => {
+                        return `
+                            <div class="bg-neon-red/10 border border-neon-red/30 rounded-lg p-3">
+                                <div class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-neon-red">warning</span>
+                                    <div class="flex-1 text-xs font-mono text-slate-300">${entry}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    threatsList.innerHTML = `
+                        <div class="text-center text-slate-500 py-8">
+                            <span class="material-symbols-outlined text-4xl mb-2 block">verified_user</span>
+                            No threats detected
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading threats:', error);
+            }
+        }
+
+        // Load mitigations from backend
+        async function loadMitigations() {
+            const mitigationsList = document.getElementById('mitigations-list');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/users/${instanceId}/mitigations?lines=10`);
+                const data = await response.json();
+
+                if (data.success && data.entries.length > 0) {
+                    mitigationsList.innerHTML = data.entries.map(entry => {
+                        return `
+                            <div class="bg-neon-amber/10 border border-neon-amber/30 rounded-lg p-3">
+                                <div class="flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-neon-amber">shield</span>
+                                    <div class="flex-1 text-xs font-mono text-slate-300">${entry}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    mitigationsList.innerHTML = `
+                        <div class="text-center text-slate-500 py-8">
+                            <span class="material-symbols-outlined text-4xl mb-2 block">shield_with_house</span>
+                            No mitigations applied yet
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading mitigations:', error);
+            }
+        }
+
+        // Refresh instance data
+        async function refreshInstance() {
+            await loadInstanceDetails();
+        }
+
+        // Test connection
+        async function testConnection() {
+            if (!instanceId) return;
+
+            try {
+                await fetch(`${API_BASE}/api/users/${instanceId}/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'online' })
+                });
+
+                alert('Connection test initiated');
+                await refreshInstance();
+            } catch (error) {
+                console.error('Error testing connection:', error);
+                alert('Failed to test connection');
+            }
+        }
+
+        // Trigger payload for this instance
+        async function triggerInstancePayload(attackType) {
+            if (!instanceId) return;
+
+            // Show workflow display
+            const workflowDisplay = document.getElementById('workflow-display');
+            workflowDisplay.classList.remove('hidden');
+
+            // Reset workflow steps
+            document.getElementById('step-payload').className = 'bg-primary/20 border border-primary/50 rounded-lg p-4 text-center transition-all';
+            document.getElementById('step-detection').className = 'bg-white/5 border border-white/10 rounded-lg p-4 text-center transition-all';
+            document.getElementById('step-mitigation').className = 'bg-white/5 border border-white/10 rounded-lg p-4 text-center transition-all';
+            document.getElementById('payload-info').textContent = `Sending ${attackType.toUpperCase()} payload...`;
+            document.getElementById('detection-info').textContent = '-';
+            document.getElementById('mitigation-info').textContent = '-';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/users/${instanceId}/trigger-payload`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ attack_type: attackType })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Update step 1: Payload sent
+                    document.getElementById('payload-info').textContent = `${attackType.toUpperCase()} - ${result.payload.rate} req/s, ${result.payload.sbytes} bytes`;
+
+                    // Update step 2: Detection
+                    setTimeout(() => {
+                        const isAttack = result.status === 'THREAT';
+                        const detectionEl = document.getElementById('step-detection');
+
+                        if (isAttack) {
+                            detectionEl.className = 'bg-neon-red/20 border border-neon-red/50 rounded-lg p-4 text-center transition-all';
+                            detectionEl.querySelector('.material-symbols-outlined').className = 'material-symbols-outlined text-4xl text-neon-red mb-2';
+                            detectionEl.querySelector('.text-sm').className = 'text-sm font-bold text-neon-red';
+                            document.getElementById('detection-info').textContent = `⚠️ ${result.detection_result.attack_type} detected (${(result.detection_result.confidence * 100).toFixed(1)}% confidence)`;
+                        } else {
+                            detectionEl.className = 'bg-neon-green/20 border border-neon-green/50 rounded-lg p-4 text-center transition-all';
+                            detectionEl.querySelector('.material-symbols-outlined').className = 'material-symbols-outlined text-4xl text-neon-green mb-2';
+                            detectionEl.querySelector('.text-sm').className = 'text-sm font-bold text-neon-green';
+                            document.getElementById('detection-info').textContent = '✅ Traffic is normal';
+                        }
+
+                        // Update step 3: Mitigation
+                        setTimeout(() => {
+                            if (isAttack && result.mitigation) {
+                                const mitigationEl = document.getElementById('step-mitigation');
+                                mitigationEl.className = 'bg-neon-amber/20 border border-neon-amber/50 rounded-lg p-4 text-center transition-all';
+                                mitigationEl.querySelector('.material-symbols-outlined').className = 'material-symbols-outlined text-4xl text-neon-amber mb-2';
+                                mitigationEl.querySelector('.text-sm').className = 'text-sm font-bold text-neon-amber';
+                                document.getElementById('mitigation-info').textContent = `🛡️ ${result.mitigation.action}`;
+                            } else {
+                                document.getElementById('step-mitigation').querySelector('.text-sm').textContent = 'No action needed';
+                                document.getElementById('mitigation-info').textContent = 'Traffic allowed';
+                            }
+
+                            // Refresh data after a short delay
+                            setTimeout(() => {
+                                refreshInstance();
+                            }, 1000);
+                        }, 800);
+                    }, 600);
+                } else {
+                    alert(`Error: ${result.error || 'Failed to trigger payload'}`);
+                    workflowDisplay.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error triggering payload:', error);
+                alert('Failed to trigger payload');
+                workflowDisplay.classList.add('hidden');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadInstanceDetails();
+            // Auto-refresh every 5 seconds
+            setInterval(refreshInstance, 5000);
+        });
+    </script>
+</body>
+
+</html>

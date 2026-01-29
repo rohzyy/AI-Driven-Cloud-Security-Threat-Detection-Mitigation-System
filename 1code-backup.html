@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Security Command Center Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0b0e14",
+                        "surface-dark": "#161b22",
+                        "neon-green": "#00ff9d",
+                        "neon-amber": "#ffb000",
+                        "neon-red": "#ff4d4d",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glow-red {
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+        }
+
+        .glow-green {
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+
+        .glow-amber {
+            box-shadow: 0 0 15px rgba(255, 176, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
+    <!-- Top Navigation Bar -->
+    <header
+        class="flex items-center justify-between border-b border-white/10 bg-background-light dark:bg-background-dark px-8 py-3 sticky top-0 z-50">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined">shield_with_heart</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight">Security Command Center</h1>
+            </div>
+            <nav class="hidden md:flex items-center gap-6">
+                <a class="text-primary font-semibold text-sm" href="/">Dashboard</a>
+                <a class="text-slate-500 hover:text-white transition-colors text-sm" href="/alerts.html">Alerts</a>
+                <a class="text-slate-500 hover:text-white transition-colors text-sm"
+                    href="/mitigations.html">Mitigations</a>
+                <a class="text-slate-500 hover:text-white transition-colors text-sm" href="/assets.html">Assets</a>
+                <a class="text-slate-500 hover:text-white transition-colors text-sm" href="/reports.html">Reports</a>
+                <a class="text-slate-500 hover:text-white transition-colors text-sm" href="/models.html">ML Models</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="relative w-64">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">search</span>
+                <input
+                    class="w-full bg-surface-dark border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary placeholder:text-slate-600"
+                    placeholder="Search threats, IPs, or logs..." type="text" />
+            </div>
+            <button class="p-2 rounded-lg bg-surface-dark text-slate-400 hover:text-white relative">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="absolute top-2 right-2 size-2 bg-neon-red rounded-full"></span>
+            </button>
+            <button class="p-2 rounded-lg bg-surface-dark text-slate-400 hover:text-white">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+            <div class="h-8 w-px bg-white/10 mx-2"></div>
+            <div class="flex items-center gap-3">
+                <div class="text-right">
+                    <p class="text-xs font-bold">SOC Analyst</p>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest">Level 3 Ops</p>
+                </div>
+                <div class="size-9 rounded-full bg-cover bg-center border border-white/20"
+                    data-alt="User avatar of a security professional"
+                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkWMMRG4cl1pdYBdf7YEiAmxLzi5xYoz07HLQ-jwdXG5isgfwOAf_DKg7DccpO5dtBJ1RPAoQaA6ECmDqd0EwtyY7nlNcAUIa5eBpfb3rEw2nI8uwTj9hsMvDryAYjDKPdaU0LcSunX0NIfjGSYBqdmHKa1DIfqG70tnGQwp7HNaCA9ctYXrU-XsN2uDQs-n1V_bhAFW0sud55wtM0vhpY_7YFjoJF7QA8XucZIJq261-6EpLC0V0AxdmQAutRc2-pz3WKn9D-nTd7');">
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="p-8 max-w-[1600px] mx-auto space-y-6">
+        <!-- KPI Metrics Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6 glow-amber">
+                <div class="flex justify-between items-start mb-4">
+                    <p class="text-slate-400 text-sm font-medium">AI Threat Score</p>
+                    <span class="material-symbols-outlined text-neon-amber">psychology</span>
+                </div>
+                <div class="flex items-end gap-2">
+                    <p class="text-4xl font-bold tracking-tighter text-neon-amber">82<span
+                            class="text-lg text-slate-500">/100</span></p>
+                    <p class="text-neon-red text-xs font-bold mb-1 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-xs">trending_up</span> +12%
+                    </p>
+                </div>
+                <div class="mt-4 w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-neon-amber h-full rounded-full" style="width: 82%"></div>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-2 uppercase font-bold tracking-wider">High Risk Elevation
+                    Detected</p>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <p class="text-slate-400 text-sm font-medium">Total Alerts (24h)</p>
+                    <span class="material-symbols-outlined text-primary">warning</span>
+                </div>
+                <div class="flex items-end gap-2">
+                    <p class="text-4xl font-bold tracking-tighter text-white">1,284</p>
+                    <p class="text-neon-green text-xs font-bold mb-1 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-xs">trending_down</span> -5%
+                    </p>
+                </div>
+                <div class="mt-4 flex gap-1">
+                    <div class="h-1 flex-1 bg-neon-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-neon-amber rounded-full"></div>
+                    <div class="h-1 flex-[2] bg-white/10 rounded-full"></div>
+                </div>
+                <div class="flex justify-between mt-2">
+                    <span class="text-[10px] text-slate-500">24 Critical</span>
+                    <span class="text-[10px] text-slate-500">112 Warning</span>
+                </div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6 glow-green">
+                <div class="flex justify-between items-start mb-4">
+                    <p class="text-slate-400 text-sm font-medium">Active Mitigations</p>
+                    <span class="material-symbols-outlined text-neon-green">verified_user</span>
+                </div>
+                <div class="flex items-end gap-2">
+                    <p class="text-4xl font-bold tracking-tighter text-neon-green">42</p>
+                    <span
+                        class="bg-neon-green/10 text-neon-green text-[10px] font-bold px-2 py-0.5 rounded uppercase mb-1">Stable</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-4 leading-relaxed">
+                    Automated playbooks currently neutralizing <span class="text-white">18 DDoS nodes</span>.
+                </p>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <p class="text-slate-400 text-sm font-medium">Data Processed</p>
+                    <span class="material-symbols-outlined text-slate-400">database</span>
+                </div>
+                <div class="flex items-end gap-2">
+                    <p class="text-4xl font-bold tracking-tighter text-white">1.2 <span
+                            class="text-lg text-slate-500">PB</span></p>
+                    <p class="text-primary text-xs font-bold mb-1">+15%</p>
+                </div>
+                <div class="flex gap-2 mt-4 overflow-hidden">
+                    <div class="h-8 w-1 bg-primary/20 rounded-full"></div>
+                    <div class="h-8 w-1 bg-primary/40 rounded-full"></div>
+                    <div class="h-8 w-1 bg-primary/60 rounded-full"></div>
+                    <div class="h-8 w-1 bg-primary/80 rounded-full"></div>
+                    <div class="h-8 w-1 bg-primary rounded-full"></div>
+                    <div class="h-8 w-1 bg-primary rounded-full"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Global Threat Map (Left/Center Large) -->
+            <div class="lg:col-span-2 space-y-6">
+                <div
+                    class="bg-surface-dark border border-white/5 rounded-xl overflow-hidden flex flex-col min-h-[500px]">
+                    <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-lg font-bold">Global Threat Map</h2>
+                            <p class="text-xs text-slate-500">Real-time anomalous traffic flow &amp; origin
+                                identification</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span
+                                class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-neon-red">
+                                <span class="size-2 bg-neon-red rounded-full animate-pulse"></span> Attack Origin
+                            </span>
+                            <span
+                                class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-primary">
+                                <span class="size-2 bg-primary rounded-full"></span> Secure Node
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex-1 relative bg-black/40"
+                        style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0); background-size: 24px 24px;">
+                        <div class="absolute inset-0 bg-cover bg-center mix-blend-luminosity opacity-40"
+                            data-alt="High tech dark world map showing global network nodes" data-location="WorldMap"
+                            style="background-image: url('https://placeholder.pics/svg/300');"></div>
+                        <!-- Decorative SVG Overlay for Attack Lines -->
+                        <svg class="absolute inset-0 w-full h-full pointer-events-none" preserveaspectratio="none"
+                            viewbox="0 0 800 400">
+                            <path d="M100 200 Q 400 50 700 200" fill="none" opacity="0.6" stroke="#ff4d4d"
+                                stroke-dasharray="5,5" stroke-width="1.5"></path>
+                            <path d="M150 250 Q 450 150 650 100" fill="none" opacity="0.4" stroke="#ffb000"
+                                stroke-dasharray="5,5" stroke-width="1.5"></path>
+                            <circle class="animate-ping" cx="100" cy="200" fill="#ff4d4d" r="4"></circle>
+                        </svg>
+                        <!-- Map Controls -->
+                        <div class="absolute bottom-6 left-6 flex flex-col gap-2">
+                            <button
+                                class="size-9 bg-surface-dark border border-white/10 rounded flex items-center justify-center hover:bg-white/5">
+                                <span class="material-symbols-outlined">add</span>
+                            </button>
+                            <button
+                                class="size-9 bg-surface-dark border border-white/10 rounded flex items-center justify-center hover:bg-white/5">
+                                <span class="material-symbols-outlined">remove</span>
+                            </button>
+                        </div>
+                        <!-- Map Overlay Info -->
+                        <div
+                            class="absolute top-6 right-6 p-4 bg-surface-dark/80 backdrop-blur-md border border-white/10 rounded-lg max-w-xs">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold">Active Hotspot</span>
+                                <span
+                                    class="text-[10px] px-2 py-0.5 bg-neon-red/20 text-neon-red rounded">Critical</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-slate-500">Region:</span>
+                                    <span>EU-West (Frankfurt)</span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-slate-500">Anomaly:</span>
+                                    <span class="text-neon-amber">Inbound UDP Flood</span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-slate-500">Magnitude:</span>
+                                    <span>4.8 GB/s</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Risk Trend Line Chart -->
+                <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h2 class="text-lg font-bold">Risk Trend (24h)</h2>
+                            <p class="text-xs text-slate-500">System-wide vulnerability oscillation</p>
+                        </div>
+                        <div class="flex bg-white/5 p-1 rounded-lg">
+                            <button
+                                class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-primary text-white shadow-lg">1h</button>
+                            <button
+                                class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded text-slate-500 hover:text-white">24h</button>
+                            <button
+                                class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded text-slate-500 hover:text-white">7d</button>
+                        </div>
+                    </div>
+                    <div class="h-48 w-full relative">
+                        <svg class="w-full h-full" fill="none" preserveaspectratio="none" viewbox="0 0 800 150">
+                            <path d="M0 100 Q 100 80 200 120 T 400 40 T 600 90 T 800 20" fill="none" stroke="#137fec"
+                                stroke-linecap="round" stroke-width="3"></path>
+                            <path d="M0 100 Q 100 80 200 120 T 400 40 T 600 90 T 800 20 V 150 H 0 Z"
+                                fill="url(#chartGradient)" opacity="0.1"></path>
+                            <defs>
+                                <lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#137fec"></stop>
+                                    <stop offset="100%" stop-color="#137fec" stop-opacity="0"></stop>
+                                </lineargradient>
+                            </defs>
+                        </svg>
+                        <div class="flex justify-between mt-4 text-[10px] text-slate-500 font-bold px-2">
+                            <span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>23:59</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Sidebar: AI Insights & Live Feed -->
+            <div class="space-y-6">
+                <!-- AI Insights Panel -->
+                <div class="bg-surface-dark border border-white/5 rounded-xl flex flex-col h-full overflow-hidden">
+                    <div class="p-6 border-b border-white/5 flex items-center gap-3">
+                        <div class="size-8 rounded bg-primary/20 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-xl">auto_awesome</span>
+                        </div>
+                        <div>
+                            <h2 class="text-md font-bold">AI Insights</h2>
+                            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Natural Language Logic</p>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-6 flex-1">
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span
+                                    class="text-[10px] font-bold px-2 py-0.5 rounded bg-neon-red/10 text-neon-red uppercase">Critical</span>
+                                <span class="text-[10px] text-slate-500">2m ago</span>
+                            </div>
+                            <h3 class="text-sm font-bold text-slate-200">Emerging RDP Brute Force detected</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                AI identified a credential stuffing pattern targeting the <span
+                                    class="text-primary">Finance-Gateway-04</span> node. Traffic originating from 12
+                                distinct subnets in Eastern Europe.
+                            </p>
+                            <button class="text-[10px] font-bold text-primary flex items-center gap-1 hover:underline">
+                                START AUTO-QUARANTINE <span
+                                    class="material-symbols-outlined text-xs">chevron_right</span>
+                            </button>
+                        </div>
+                        <div class="h-px bg-white/5"></div>
+                        <div class="space-y-3 opacity-80">
+                            <div class="flex justify-between">
+                                <span
+                                    class="text-[10px] font-bold px-2 py-0.5 rounded bg-neon-amber/10 text-neon-amber uppercase">Warning</span>
+                                <span class="text-[10px] text-slate-500">14m ago</span>
+                            </div>
+                            <h3 class="text-sm font-bold text-slate-200">Anomalous S3 Egress Spike</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                Unusual outbound data movement from <span
+                                    class="text-neon-amber">prod-backup-vault</span>. Volume exceeded 200% of the
+                                baseline for this timeframe.
+                            </p>
+                            <button
+                                class="text-[10px] font-bold text-slate-400 flex items-center gap-1 hover:text-white">
+                                INVESTIGATE LOGS <span class="material-symbols-outlined text-xs">open_in_new</span>
+                            </button>
+                        </div>
+                        <div class="h-px bg-white/5"></div>
+                        <div class="space-y-3 opacity-80">
+                            <div class="flex justify-between">
+                                <span
+                                    class="text-[10px] font-bold px-2 py-0.5 rounded bg-neon-amber/10 text-neon-amber uppercase">Warning</span>
+                                <span class="text-[10px] text-slate-500">45m ago</span>
+                            </div>
+                            <h3 class="text-sm font-bold text-slate-200">Credential Leak Detection</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                AI scraper matched 3 enterprise API keys on a public repository. Revocation recommended
+                                immediately.
+                            </p>
+                            <button
+                                class="text-[10px] font-bold text-slate-400 flex items-center gap-1 hover:text-white">
+                                VIEW GITHUB SOURCE <span class="material-symbols-outlined text-xs">link</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Live Events Feed -->
+                <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-sm font-bold flex items-center gap-2">
+                            <span class="size-2 bg-neon-green rounded-full"></span> Live Events
+                        </h2>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">142
+                            Events/min</span>
+                    </div>
+                    <div class="space-y-4 font-mono">
+                        <div class="text-[10px] border-l-2 border-neon-red pl-3 py-1 flex flex-col gap-1">
+                            <div class="flex justify-between text-slate-400">
+                                <span>14:32:01</span>
+                                <span class="text-neon-red">BLOCK_IP</span>
+                            </div>
+                            <p class="text-slate-200 truncate">45.22.112.55 attempt at /admin</p>
+                        </div>
+                        <div class="text-[10px] border-l-2 border-primary pl-3 py-1 flex flex-col gap-1">
+                            <div class="flex justify-between text-slate-400">
+                                <span>14:31:58</span>
+                                <span class="text-primary">INFO</span>
+                            </div>
+                            <p class="text-slate-200 truncate">S3 Bucket policy updated by ID:2910</p>
+                        </div>
+                        <div class="text-[10px] border-l-2 border-neon-green pl-3 py-1 flex flex-col gap-1">
+                            <div class="flex justify-between text-slate-400">
+                                <span>14:31:55</span>
+                                <span class="text-neon-green">RESOLVED</span>
+                            </div>
+                            <p class="text-slate-200 truncate">Malware sandbox task ID:8829 complete</p>
+                        </div>
+                        <div class="text-[10px] border-l-2 border-slate-700 pl-3 py-1 flex flex-col gap-1 opacity-50">
+                            <div class="flex justify-between text-slate-400">
+                                <span>14:31:40</span>
+                                <span class="text-slate-500">PING</span>
+                            </div>
+                            <p class="text-slate-200 truncate">Worker node health check OK</p>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full mt-6 py-2 bg-white/5 hover:bg-white/10 text-slate-400 text-[10px] font-bold uppercase rounded transition-colors">
+                        View System Logs
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Bottom Status Bar -->
+    <footer
+        class="fixed bottom-0 left-0 right-0 bg-background-dark/80 backdrop-blur-sm border-t border-white/5 px-8 py-2 flex items-center justify-between z-50">
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2 text-[10px] text-slate-500">
+                <span class="size-2 rounded-full bg-neon-green"></span>
+                API STATUS: OPERATIONAL
+            </div>
+            <div class="flex items-center gap-2 text-[10px] text-slate-500">
+                <span class="size-2 rounded-full bg-neon-green"></span>
+                LATENCY: 24ms
+            </div>
+        </div>
+        <div class="flex items-center gap-4 text-[10px] font-mono text-slate-500">
+            <span>Uptime: 99.999%</span>
+            <div class="h-3 w-px bg-white/10"></div>
+            <span>v2.4.1-stable</span>
+        </div>
+    </footer>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

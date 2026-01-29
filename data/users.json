@@ -1,0 +1,76 @@
+{
+  "devices": [
+    {
+      "device_id": "fba83c55-a6cd-4331-97d5-e2bd923173d3",
+      "device_name": "SAHE EAST",
+      "ip_address": "10.0.10.200",
+      "username": "u0_a1265",
+      "password": "OTQ0MTE2NjAzMA==",
+      "port": 8022,
+      "registered_at": "2026-01-24T06:23:07.981010",
+      "last_seen": "2026-01-24T06:23:07.981010",
+      "status": "online",
+      "metrics": {
+        "uptime": 0,
+        "cpu_usage": 0,
+        "memory_usage": 0,
+        "threats_detected": 5,
+        "mitigations_applied": 5,
+        "total_requests": 6
+      }
+    },
+    {
+      "device_id": "514b08c4-399c-419b-9da2-341b76a42eea",
+      "device_name": "SAHE WEST",
+      "ip_address": "10.0.11.199",
+      "username": "u0_a396",
+      "password": "OTQ0MTE2NjAzMA==",
+      "port": 8022,
+      "registered_at": "2026-01-24T08:47:42.762268",
+      "last_seen": "2026-01-24T08:47:42.762268",
+      "status": "online",
+      "metrics": {
+        "uptime": 0,
+        "cpu_usage": 0,
+        "memory_usage": 0,
+        "threats_detected": 0
+      }
+    },
+    {
+      "device_id": "db6f98ee-6c9e-412c-aa2d-26c1990288a4",
+      "device_name": "SAHE NORTH",
+      "ip_address": "10.0.11.148",
+      "username": "u0_a508",
+      "password": "OTQ0MTE2NjAzMA==",
+      "port": 8022,
+      "registered_at": "2026-01-24T08:54:59.006205",
+      "last_seen": "2026-01-24T08:54:59.006205",
+      "status": "online",
+      "metrics": {
+        "uptime": 0,
+        "cpu_usage": 0,
+        "memory_usage": 0,
+        "threats_detected": 0
+      }
+    },
+    {
+      "device_id": "dbc78fd8-e521-4231-97f2-aaeb2d23eb66",
+      "device_name": "Facebook.com",
+      "ip_address": "192.162.67",
+      "username": "termux",
+      "password": "dGVybXV4",
+      "port": 8022,
+      "registered_at": "2026-01-29T09:51:14.965050",
+      "last_seen": "2026-01-29T09:51:14.965061",
+      "status": "online",
+      "metrics": {
+        "uptime": 0,
+        "cpu_usage": 0,
+        "memory_usage": 0,
+        "threats_detected": 3,
+        "mitigations_applied": 3,
+        "total_requests": 4
+      }
+    }
+  ]
+}

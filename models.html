@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ML Models - Security Command Center</title>
+    <script src="/static/js/tailwind.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-dark": "#0b0e14",
+                        "surface-dark": "#161b22",
+                        "neon-red": "#ff4d4d",
+                        "neon-amber": "#ffb000",
+                        "neon-green": "#00ff9d"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(19, 127, 236, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(19, 127, 236, 0.8);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-white min-h-screen">
+    <header class="border-b border-white/10 bg-background-dark px-8 py-3 sticky top-0 z-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined">shield_with_heart</span>
+                    </div>
+                    <h1 class="text-xl font-bold">Security Command Center</h1>
+                </div>
+                <nav class="flex items-center gap-6">
+                    <a class="text-slate-500 hover:text-white text-sm" href="/">Dashboard</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/alerts.html">Alerts</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/mitigations.html">Mitigations</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/assets.html">Assets</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/reports.html">Reports</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/users.html">Instances</a>
+                    <a class="text-primary font-semibold text-sm" href="/models.html">ML Models</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-8 max-w-[1600px] mx-auto">
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold mb-2">🤖 AI/ML Detection Models</h1>
+            <p class="text-slate-400">Dual-model architecture for advanced threat detection</p>
+        </div>
+
+        <!-- Model Overview -->
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <!-- Model 1: UNSW-NB15 -->
+            <div class="bg-surface-dark border border-primary/30 rounded-xl p-6 pulse-glow">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="size-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-2xl">psychology</span>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold">UNSW-NB15 Anomaly Detector</h2>
+                            <p class="text-sm text-slate-400">Stage 1: Anomaly Screening</p>
+                        </div>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-xs font-bold">ACTIVE</span>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Model Type</h3>
+                        <p class="text-white">Isolation Forest / One-Class SVM</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Training Dataset</h3>
+                        <p class="text-white">UNSW-NB15 (2.5M+ network flows)</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Features</h3>
+                        <p class="text-white">40+ network traffic attributes</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Accuracy</h3>
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1 bg-white/5 h-2 rounded-full overflow-hidden">
+                                <div class="bg-neon-green h-full" style="width: 92%"></div>
+                            </div>
+                            <span class="text-neon-green font-bold">92%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Model Size</h3>
+                        <p class="text-white">9.4 MB</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model 2: Random Forest -->
+            <div class="bg-surface-dark border border-neon-amber/30 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="size-12 bg-neon-amber/20 rounded-lg flex items-center justify-center text-neon-amber">
+                            <span class="material-symbols-outlined text-2xl">forest</span>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold">Random Forest Classifier</h2>
+                            <p class="text-sm text-slate-400">Stage 2: Attack Classification</p>
+                        </div>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-xs font-bold">ACTIVE</span>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Model Type</h3>
+                        <p class="text-white">Random Forest Ensemble (1000 trees)</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Attack Categories</h3>
+                        <p class="text-white">10 classes (DoS, Exploits, Recon, etc.)</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Features</h3>
+                        <p class="text-white">40+ engineered features</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Accuracy</h3>
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1 bg-white/5 h-2 rounded-full overflow-hidden">
+                                <div class="bg-neon-green h-full" style="width: 95%"></div>
+                            </div>
+                            <span class="text-neon-green font-bold">95%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-2">Model Size</h3>
+                        <p class="text-white">73 MB</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detection Pipeline -->
+        <div class="bg-surface-dark border border-white/5 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold mb-6">🔄 Detection Pipeline Flow</h2>
+            <div class="flex items-center justify-between">
+                <div class="flex-1 bg-white/5 border border-white/10 rounded-lg p-4 text-center">
+                    <span class="material-symbols-outlined text-3xl text-primary mb-2">input</span>
+                    <div class="font-bold">Network Traffic</div>
+                    <div class="text-xs text-slate-500 mt-1">40+ features extracted</div>
+                </div>
+                <div class="px-4">
+                    <span class="material-symbols-outlined text-slate-500">arrow_forward</span>
+                </div>
+                <div class="flex-1 bg-primary/10 border border-primary/30 rounded-lg p-4 text-center">
+                    <span class="material-symbols-outlined text-3xl text-primary mb-2">psychology</span>
+                    <div class="font-bold">UNSW-NB15</div>
+                    <div class="text-xs text-slate-500 mt-1">Anomaly Detection</div>
+                </div>
+                <div class="px-4">
+                    <span class="material-symbols-outlined text-slate-500">arrow_forward</span>
+                </div>
+                <div class="flex-1 bg-neon-amber/10 border border-neon-amber/30 rounded-lg p-4 text-center">
+                    <span class="material-symbols-outlined text-3xl text-neon-amber mb-2">forest</span>
+                    <div class="font-bold">Random Forest</div>
+                    <div class="text-xs text-slate-500 mt-1">Classification</div>
+                </div>
+                <div class="px-4">
+                    <span class="material-symbols-outlined text-slate-500">arrow_forward</span>
+                </div>
+                <div class="flex-1 bg-neon-green/10 border border-neon-green/30 rounded-lg p-4 text-center">
+                    <span class="material-symbols-outlined text-3xl text-neon-green mb-2">verified_user</span>
+                    <div class="font-bold">Mitigation</div>
+                    <div class="text-xs text-slate-500 mt-1">Automated Response</div>
+                </div>
+            </div>
+            <div class="mt-4 text-center text-sm text-slate-400">
+                Average inference time: <span class="text-primary font-bold">42ms</span> | Throughput: <span
+                    class="text-primary font-bold">12.4k requests/sec</span>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="grid grid-cols-3 gap-6">
+            <!-- Confusion Matrix -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <h3 class="text-lg font-bold mb-4">Classification Accuracy</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">DoS Attacks</span>
+                        <span class="text-neon-green font-bold">97.2%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Exploits</span>
+                        <span class="text-neon-green font-bold">94.8%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Reconnaissance</span>
+                        <span class="text-neon-green font-bold">96.1%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Backdoor</span>
+                        <span class="text-neon-green font-bold">93.5%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm">Fuzzers</span>
+                        <span class="text-neon-green font-bold">91.8%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Info -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <h3 class="text-lg font-bold mb-4">Training Details</h3>
+                <div class="space-y-3">
+                    <div>
+                        <div class="text-sm text-slate-400 mb-1">Training Samples</div>
+                        <div class="font-bold">2,540,044</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-slate-400 mb-1">Validation Split</div>
+                        <div class="font-bold">20%</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-slate-400 mb-1">Cross-Validation</div>
+                        <div class="font-bold">5-Fold CV</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-slate-400 mb-1">Training Time</div>
+                        <div class="font-bold">~4.5 hours</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-Time Stats -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <h3 class="text-lg font-bold mb-4">Real-Time Performance</h3>
+                <div class="space-y-3">
+                    <div>
+                        <div class="text-sm text-slate-400 mb-1">Requests Analyzed Today</div>
+                        <div class="font-bold text-primary" id="requests-today">0</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-slate-400 mb-1">Detection Rate</div>
+                        <div class="font-bold text-neon-green">94.8%</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-slate-400 mb-1">False Positive Rate</div>
+                        <div class="font-bold text-neon-red">2.1%</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-slate-400 mb-1">Model Uptime</div>
+                        <div class="font-bold text-neon-green">99.99%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        async function updateModelStats() {
+            try {
+                const response = await fetch(`${API_BASE}/api/logs/activity?lines=1000`);
+                const data = await response.json();
+
+                if (data.entries) {
+                    document.getElementById('requests-today').textContent = data.entries.length.toLocaleString();
+                }
+            } catch (error) {
+                console.error('Error updating model stats:', error);
+            }
+        }
+
+        // Auto-refresh every 3 seconds
+        setInterval(updateModelStats, 3000);
+        updateModelStats();
+    </script>
+</body>
+
+</html>

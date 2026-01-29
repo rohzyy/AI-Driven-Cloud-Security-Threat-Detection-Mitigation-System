@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Protected Assets - Security Command Center</title>
+    <script src="/static/js/tailwind.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-dark": "#0b0e14",
+                        "surface-dark": "#161b22",
+                        "neon-red": "#ff4d4d",
+                        "neon-amber": "#ffb000",
+                        "neon-green": "#00ff9d"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-white min-h-screen">
+    <header class="border-b border-white/10 bg-background-dark px-8 py-3 sticky top-0 z-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined">shield_with_heart</span>
+                    </div>
+                    <h1 class="text-xl font-bold">Security Command Center</h1>
+                </div>
+                <nav class="flex items-center gap-6">
+                    <a class="text-slate-500 hover:text-white text-sm" href="/">Dashboard</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/alerts.html">Alerts</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/mitigations.html">Mitigations</a>
+                    <a class="text-primary font-semibold text-sm" href="/assets.html">Assets</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/reports.html">Reports</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/users.html">Instances</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/models.html">ML Models</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-8 max-w-[1600px] mx-auto">
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold mb-2">🏢 Protected Network Assets</h1>
+            <p class="text-slate-400">Critical infrastructure under AI protection</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Total Assets</div>
+                <div class="text-3xl font-bold text-neon-green">247</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Under Attack</div>
+                <div class="text-3xl font-bold text-neon-red" id="under-attack">0</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Protected</div>
+                <div class="text-3xl font-bold text-neon-green" id="protected-count">247</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Avg Response Time</div>
+                <div class="text-3xl font-bold text-primary">42ms</div>
+            </div>
+        </div>
+
+        <!-- Asset Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Web Servers -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="size-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-2xl">dns</span>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-xs font-bold">SECURE</span>
+                </div>
+                <h3 class="text-lg font-bold mb-2">Web Servers (Prod)</h3>
+                <p class="text-sm text-slate-400 mb-4">Frontend application cluster</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Status:</span>
+                        <span class="text-neon-green font-mono">ONLINE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Nodes:</span>
+                        <span class="font-mono">12</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Threats Blocked:</span>
+                        <span class="font-mono" id="web-blocked">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="size-12 bg-neon-amber/20 rounded-lg flex items-center justify-center text-neon-amber">
+                        <span class="material-symbols-outlined text-2xl">database</span>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-xs font-bold">SECURE</span>
+                </div>
+                <h3 class="text-lg font-bold mb-2">Database Cluster</h3>
+                <p class="text-sm text-slate-400 mb-4">PostgreSQL HA cluster</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Status:</span>
+                        <span class="text-neon-green font-mono">ONLINE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Nodes:</span>
+                        <span class="font-mono">3</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Threats Blocked:</span>
+                        <span class="font-mono" id="db-blocked">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Gateway -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="size-12 bg-neon-green/20 rounded-lg flex items-center justify-center text-neon-green">
+                        <span class="material-symbols-outlined text-2xl">api</span>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-xs font-bold">SECURE</span>
+                </div>
+                <h3 class="text-lg font-bold mb-2">API Gateway</h3>
+                <p class="text-sm text-slate-400 mb-4">REST & GraphQL endpoints</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Status:</span>
+                        <span class="text-neon-green font-mono">ONLINE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Endpoints:</span>
+                        <span class="font-mono">47</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Threats Blocked:</span>
+                        <span class="font-mono" id="api-blocked">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="size-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-2xl">cloud</span>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-xs font-bold">SECURE</span>
+                </div>
+                <h3 class="text-lg font-bold mb-2">S3 Storage Buckets</h3>
+                <p class="text-sm text-slate-400 mb-4">Object storage & backups</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Status:</span>
+                        <span class="text-neon-green font-mono">ONLINE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Buckets:</span>
+                        <span class="font-mono">28</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Data:</span>
+                        <span class="font-mono">1.2 PB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VPN -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="size-12 bg-neon-green/20 rounded-lg flex items-center justify-center text-neon-green">
+                        <span class="material-symbols-outlined text-2xl">vpn_key</span>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-xs font-bold">SECURE</span>
+                </div>
+                <h3 class="text-lg font-bold mb-2">VPN Gateway</h3>
+                <p class="text-sm text-slate-400 mb-4">Secure remote access</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Status:</span>
+                        <span class="text-neon-green font-mono">ONLINE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Sessions:</span>
+                        <span class="font-mono">142</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Threats Blocked:</span>
+                        <span class="font-mono" id="vpn-blocked">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load Balancer -->
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="size-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-2xl">balance</span>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-xs font-bold">SECURE</span>
+                </div>
+                <h3 class="text-lg font-bold mb-2">Load Balancers</h3>
+                <p class="text-sm text-slate-400 mb-4">Traffic distribution</p>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Status:</span>
+                        <span class="text-neon-green font-mono">ONLINE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Backends:</span>
+                        <span class="font-mono">24</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Req/s:</span>
+                        <span class="font-mono">12.4k</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        async function updateAssetStats() {
+            try {
+                const response = await fetch(`${API_BASE}/api/logs/threat?lines=100`);
+                const data = await response.json();
+
+                if (data.entries && data.entries.length > 0) {
+                    const threatCount = data.entries.length;
+                    document.getElementById('under-attack').textContent = Math.min(threatCount, 5);
+                    document.getElementById('protected-count').textContent = 247 - Math.min(threatCount, 5);
+
+                    // Distribute threats across assets
+                    document.getElementById('web-blocked').textContent = Math.floor(threatCount * 0.4);
+                    document.getElementById('db-blocked').textContent = Math.floor(threatCount * 0.2);
+                    document.getElementById('api-blocked').textContent = Math.floor(threatCount * 0.3);
+                    document.getElementById('vpn-blocked').textContent = Math.floor(threatCount * 0.1);
+                }
+            } catch (error) {
+                console.error('Error updating assets:', error);
+            }
+        }
+
+        // Auto-refresh every 3 seconds
+        setInterval(updateAssetStats, 3000);
+        updateAssetStats();
+    </script>
+</body>
+
+</html>

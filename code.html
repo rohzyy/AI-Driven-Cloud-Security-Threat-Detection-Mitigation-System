@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Threat Detection &amp; Deep Analysis</title>
+    <!-- Tailwind CSS - Local copy for reliability -->
+    <script src="/static/js/tailwind.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "card-dark": "#1a242f",
+                        "border-dark": "#2d3a49",
+                        "danger": "#ef4444",
+                        "success": "#0bda5b"
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-size: 20px;
+        }
+
+        .node-pulse {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+    <!-- Top Navigation -->
+    <header
+        class="border-b border-solid border-slate-200 dark:border-border-dark bg-white dark:bg-background-dark px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="size-8 bg-primary rounded flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined">security</span>
+                </div>
+                <h2 class="text-lg font-bold tracking-tight">CloudThreat AI</h2>
+            </div>
+            <nav class="hidden md:flex items-center gap-6">
+                <a class="text-sm font-medium opacity-70 hover:opacity-100 transition-opacity" href="/">Dashboard</a>
+                <a class="text-sm font-semibold text-primary" href="#">Alerts</a>
+                <a class="text-sm font-medium opacity-70 hover:opacity-100 transition-opacity"
+                    href="/mitigations.html">Mitigations</a>
+                <a class="text-sm font-medium opacity-70 hover:opacity-100 transition-opacity"
+                    href="/assets.html">Assets</a>
+                <a class="text-sm font-medium opacity-70 hover:opacity-100 transition-opacity"
+                    href="/reports.html">Reports</a>
+                <a class="text-sm font-medium opacity-70 hover:opacity-100 transition-opacity"
+                    href="/users.html">Instances</a>
+                <a class="text-sm font-medium opacity-70 hover:opacity-100 transition-opacity" href="/models.html">ML
+                    Models</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="relative flex items-center">
+                <span class="material-symbols-outlined absolute left-3 text-slate-400">search</span>
+                <input
+                    class="bg-slate-100 dark:bg-card-dark border-none rounded-lg pl-10 pr-4 py-2 text-sm w-64 focus:ring-2 focus:ring-primary"
+                    placeholder="Search threats..." type="text" />
+            </div>
+            <div
+                class="size-10 rounded-full bg-slate-200 dark:bg-card-dark overflow-hidden border border-slate-300 dark:border-border-dark">
+                <img alt="User Profile" data-alt="User avatar portrait for profile menu"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1LucmiHHW-KOMOheQ5EV-H4vCealeapQcvN1RwYFtIW57nXrrbc9in0TH4GDfSfz6t3JUL9wtvRh5nHh0OJ6V8O2KOswOkPCEzX0IRL1eYlTJLelMlLotXQD9VG-u7ZxkyFfCOZDkoMBH-7KYGFXwpi9sbhfZ1rqm_ifJYpMmah-N1DmN1TjvPqwVfedtXW5DqhRgHRU2BQWPn2aTnTMC2Dz4l4ld-U3sh47Y0GvntwYegBevK2TidWGSa835u-SrsBsU2TCZvkXy" />
+            </div>
+        </div>
+    </header>
+    <main class="flex-1 flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full p-6 gap-6">
+        <!-- Left Content Area -->
+        <div class="flex-1 flex flex-col gap-6">
+            <!-- Breadcrumbs & Heading -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 text-sm opacity-60">
+                    <a class="hover:text-primary transition-colors" href="#">Alerts</a>
+                    <span class="material-symbols-outlined !text-sm">chevron_right</span>
+                    <span class="text-white">Possible Credential Exfiltration</span>
+                </div>
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-3xl font-black tracking-tight leading-tight">Threat Detail: Possible Credential
+                            Exfiltration</h1>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1">High-confidence anomaly detected in <span
+                                class="text-primary font-mono">Production-VPC-01</span></p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="px-3 py-1 bg-danger/20 text-danger text-xs font-bold uppercase rounded-full border border-danger/30">Critical
+                            Impact</span>
+                        <button
+                            class="flex items-center gap-2 bg-slate-200 dark:bg-card-dark hover:bg-slate-300 dark:hover:bg-slate-700 px-4 py-2 rounded-lg font-semibold text-sm transition-all">
+                            <span class="material-symbols-outlined">download</span>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Key Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div
+                    class="bg-white dark:bg-card-dark p-5 rounded-xl border border-slate-200 dark:border-border-dark flex flex-col gap-1">
+                    <span class="text-xs font-semibold uppercase tracking-wider opacity-60">Detection Confidence</span>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold">94%</span>
+                        <span class="text-success text-sm font-medium mb-1 flex items-center"><span
+                                class="material-symbols-outlined !text-sm">trending_up</span>+12%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+                        <div class="bg-primary h-full rounded-full" style="width: 94%"></div>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-card-dark p-5 rounded-xl border border-slate-200 dark:border-border-dark flex flex-col gap-1">
+                    <span class="text-xs font-semibold uppercase tracking-wider opacity-60">Risk Score</span>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold">8.9/10</span>
+                        <span class="text-danger text-sm font-medium mb-1 flex items-center"><span
+                                class="material-symbols-outlined !text-sm">warning</span>Extreme</span>
+                    </div>
+                    <p class="text-xs opacity-50 mt-2">Based on data volume and entity sensitivity</p>
+                </div>
+                <div
+                    class="bg-white dark:bg-card-dark p-5 rounded-xl border border-slate-200 dark:border-border-dark flex flex-col gap-1">
+                    <span class="text-xs font-semibold uppercase tracking-wider opacity-60">Detection Latency</span>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold">42ms</span>
+                        <span class="text-success text-sm font-medium mb-1 flex items-center">Real-time</span>
+                    </div>
+                    <p class="text-xs opacity-50 mt-2">Analyzed across 14 event streams</p>
+                </div>
+            </div>
+            <!-- AI Evidence Map Section -->
+            <div
+                class="bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark flex flex-col flex-1 overflow-hidden min-h-[450px]">
+                <div
+                    class="p-5 border-b border-slate-200 dark:border-border-dark flex justify-between items-center bg-slate-50/50 dark:bg-background-dark/50">
+                    <div>
+                        <h3 class="font-bold text-lg">AI Evidence: Relationship Map</h3>
+                        <p class="text-xs opacity-60">Visual tracing of entity interactions over the last 60 minutes</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button
+                            class="p-2 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-border-dark">
+                            <span class="material-symbols-outlined">zoom_in</span>
+                        </button>
+                        <button
+                            class="p-2 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-border-dark">
+                            <span class="material-symbols-outlined">zoom_out</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Graph Visualization Mockup -->
+                <div class="flex-1 relative bg-slate-50 dark:bg-[#0c1219] overflow-hidden">
+                    <!-- SVG Background Pattern -->
+                    <div class="absolute inset-0 opacity-20 pointer-events-none"
+                        style="background-image: radial-gradient(#2d3a49 1px, transparent 1px); background-size: 30px 30px;">
+                    </div>
+                    <!-- Nodes and Edges -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="relative w-full h-full max-w-2xl max-h-[400px]">
+                            <!-- Edges (Visual lines) -->
+                            <svg class="absolute inset-0 w-full h-full pointer-events-none" style="overflow: visible;">
+                                <line class="text-danger animate-pulse" stroke="currentColor" stroke-dasharray="4"
+                                    stroke-width="2" x1="20%" x2="50%" y1="50%" y2="20%"></line>
+                                <line class="text-slate-400/50" stroke="currentColor" stroke-width="2" x1="20%" x2="50%"
+                                    y1="50%" y2="80%"></line>
+                                <line class="text-danger" stroke="currentColor" stroke-dasharray="4" stroke-width="2"
+                                    x1="50%" x2="80%" y1="20%" y2="50%"></line>
+                                <line class="text-slate-400/50" stroke="currentColor" stroke-width="2" x1="50%" x2="80%"
+                                    y1="80%" y2="50%"></line>
+                            </svg>
+                            <!-- Node: Malicious IP -->
+                            <div class="absolute left-[10%] top-[40%] flex flex-col items-center gap-2">
+                                <div
+                                    class="size-14 rounded-full bg-danger/20 border-2 border-danger flex items-center justify-center text-danger node-pulse">
+                                    <span class="material-symbols-outlined !text-3xl">public</span>
+                                </div>
+                                <div
+                                    class="bg-card-dark border border-border-dark rounded-lg px-3 py-1 text-center shadow-xl">
+                                    <p class="text-[10px] font-bold uppercase opacity-50">Attacker IP</p>
+                                    <p class="text-xs font-mono">192.168.1.105</p>
+                                    <p class="text-[9px] text-danger">Moscow, RU</p>
+                                </div>
+                            </div>
+                            <!-- Node: IAM Role -->
+                            <div class="absolute left-[45%] top-[10%] flex flex-col items-center gap-2">
+                                <div
+                                    class="size-14 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center text-primary">
+                                    <span class="material-symbols-outlined !text-3xl">account_circle</span>
+                                </div>
+                                <div
+                                    class="bg-card-dark border border-border-dark rounded-lg px-3 py-1 text-center shadow-xl">
+                                    <p class="text-[10px] font-bold uppercase opacity-50">IAM Role</p>
+                                    <p class="text-xs font-mono">DevOps-Admin-Access</p>
+                                </div>
+                            </div>
+                            <!-- Node: Resource (S3) -->
+                            <div class="absolute left-[75%] top-[40%] flex flex-col items-center gap-2">
+                                <div
+                                    class="size-14 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center text-amber-500">
+                                    <span class="material-symbols-outlined !text-3xl">database</span>
+                                </div>
+                                <div
+                                    class="bg-card-dark border border-border-dark rounded-lg px-3 py-1 text-center shadow-xl">
+                                    <p class="text-[10px] font-bold uppercase opacity-50">Target Resource</p>
+                                    <p class="text-xs font-mono">prod-customer-pii</p>
+                                    <p class="text-[9px] text-amber-500 uppercase font-bold">Encrypted</p>
+                                </div>
+                            </div>
+                            <!-- Node: Trusted Host (Baseline) -->
+                            <div class="absolute left-[45%] top-[70%] flex flex-col items-center gap-2 opacity-50">
+                                <div
+                                    class="size-14 rounded-full bg-slate-500/20 border-2 border-slate-500 flex items-center justify-center text-slate-400">
+                                    <span class="material-symbols-outlined !text-3xl">dns</span>
+                                </div>
+                                <div
+                                    class="bg-card-dark border border-border-dark rounded-lg px-3 py-1 text-center shadow-xl">
+                                    <p class="text-[10px] font-bold uppercase">Baseline Origin</p>
+                                    <p class="text-xs font-mono">us-east-1a-prod</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-primary/5 border-t border-slate-200 dark:border-border-dark flex gap-4">
+                    <span class="material-symbols-outlined text-primary">info</span>
+                    <p class="text-sm">
+                        <strong class="text-primary">Natural Language Insight:</strong> Anomaly detected where IAM Role
+                        'DevOps-Admin' initiated a cross-region S3:GetObject request from an unverified IP address in
+                        Russia, deviating from its baseline behavior of us-east-1 connections.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- Right Side Panel: Mitigation Actions -->
+        <aside class="w-full lg:w-[380px] flex flex-col gap-6">
+            <!-- Mitigation Panel -->
+            <div
+                class="bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark flex flex-col overflow-hidden shadow-sm">
+                <div
+                    class="p-5 border-b border-slate-200 dark:border-border-dark bg-slate-50/50 dark:bg-background-dark/50">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <span class="material-symbols-outlined text-amber-500">bolt</span>
+                        Recommended Actions
+                    </h3>
+                </div>
+                <div class="p-5 flex flex-col gap-4">
+                    <div class="flex flex-col gap-3">
+                        <button
+                            class="w-full bg-danger hover:bg-danger/90 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                            <span class="material-symbols-outlined">block</span>
+                            Isolate Resource
+                        </button>
+                        <button
+                            class="w-full bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                            <span class="material-symbols-outlined">refresh</span>
+                            Revoke Credentials
+                        </button>
+                    </div>
+                    <hr class="border-slate-200 dark:border-border-dark" />
+                    <div class="space-y-4">
+                        <p class="text-xs font-bold uppercase opacity-50 tracking-widest">Automation Checklist</p>
+                        <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                            <input checked=""
+                                class="mt-1 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary"
+                                type="checkbox" />
+                            <div>
+                                <p class="text-sm font-semibold">Restrictive SCP Policy</p>
+                                <p class="text-xs opacity-60">Prevents further exfiltration from the VPC</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                            <input checked=""
+                                class="mt-1 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary"
+                                type="checkbox" />
+                            <div>
+                                <p class="text-sm font-semibold">Enable MFA Delete</p>
+                                <p class="text-xs opacity-60">Add layer of protection to target S3 bucket</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                            <input
+                                class="mt-1 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary"
+                                type="checkbox" />
+                            <div>
+                                <p class="text-sm font-semibold">Snapshot &amp; Clone Disk</p>
+                                <p class="text-xs opacity-60">Preserve evidence for forensic analysis</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-slate-200 dark:border-border-dark flex gap-2">
+                    <button
+                        class="flex-1 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Dismiss</button>
+                    <button
+                        class="flex-1 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Share
+                        Task</button>
+                </div>
+            </div>
+            <!-- Activity Timeline -->
+            <div
+                class="bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark flex flex-col p-5 gap-4">
+                <h3 class="font-bold text-base flex items-center justify-between">
+                    Activity Timeline
+                    <span
+                        class="text-[10px] bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500">Live</span>
+                </h3>
+                <div
+                    class="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200 dark:before:bg-border-dark">
+                    <!-- Timeline Item -->
+                    <div class="relative pl-8">
+                        <div class="absolute left-0 top-1 size-4 rounded-full bg-danger border-4 border-card-dark">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-bold text-slate-500">14:23:05</span>
+                            <span class="text-sm font-semibold">Large Data Egress Detected</span>
+                            <span class="text-xs opacity-60">4.2GB transferred to 192.168.1.105</span>
+                        </div>
+                    </div>
+                    <!-- Timeline Item -->
+                    <div class="relative pl-8">
+                        <div class="absolute left-0 top-1 size-4 rounded-full bg-amber-500 border-4 border-card-dark">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-bold text-slate-500">14:22:41</span>
+                            <span class="text-sm font-semibold">Anomalous Region Login</span>
+                            <span class="text-xs opacity-60">Session started from Moscow, Russia</span>
+                        </div>
+                    </div>
+                    <!-- Timeline Item -->
+                    <div class="relative pl-8">
+                        <div class="absolute left-0 top-1 size-4 rounded-full bg-primary border-4 border-card-dark">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-bold text-slate-500">14:18:12</span>
+                            <span class="text-sm font-semibold">Role Assumption (STS)</span>
+                            <span class="text-xs opacity-60">svc-prod-admin via DevOps instance</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="w-full text-center text-xs text-primary font-bold hover:underline mt-2">View Full Event
+                    Log</button>
+            </div>
+        </aside>
+    </main>
+    <!-- Footer Status Bar -->
+    <footer
+        class="bg-white dark:bg-background-dark border-t border-slate-200 dark:border-border-dark px-6 py-2 flex items-center justify-between text-[11px] font-mono opacity-60">
+        <div class="flex gap-4">
+            <span>ENV: AWS-US-EAST-1</span>
+            <span>SHARD: 142A</span>
+            <span>LATENCY: 12ms</span>
+        </div>
+        <div class="flex gap-4 items-center">
+            <span class="flex items-center gap-1"><span class="size-2 rounded-full bg-success"></span> AI Engine
+                Online</span>
+            <span>v4.2.0-STABLE</span>
+        </div>
+    </footer>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

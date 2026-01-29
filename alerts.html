@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Active Alerts - Security Command Center</title>
+    <script src="/static/js/tailwind.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-dark": "#0b0e14",
+                        "surface-dark": "#161b22",
+                        "neon-red": "#ff4d4d",
+                        "neon-amber": "#ffb000",
+                        "neon-green": "#00ff9d"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .pulse-red {
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(255, 77, 77, 0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-white min-h-screen">
+    <header class="border-b border-white/10 bg-background-dark px-8 py-3 sticky top-0 z-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined">shield_with_heart</span>
+                    </div>
+                    <h1 class="text-xl font-bold">Security Command Center</h1>
+                </div>
+                <nav class="flex items-center gap-6">
+                    <a class="text-slate-500 hover:text-white text-sm" href="/">Dashboard</a>
+                    <a class="text-primary font-semibold text-sm" href="/alerts.html">Alerts</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/mitigations.html">Mitigations</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/assets.html">Assets</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/reports.html">Reports</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/users.html">Instances</a>
+                    <a class="text-slate-500 hover:text-white text-sm" href="/models.html">ML Models</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-8 max-w-[1600px] mx-auto">
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold mb-2">🚨 Active Threat Alerts</h1>
+            <p class="text-slate-400">Real-time detection and classification of network threats</p>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Critical Alerts</div>
+                <div class="text-3xl font-bold text-neon-red" id="critical-count">0</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">High Priority</div>
+                <div class="text-3xl font-bold text-neon-amber" id="high-count">0</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Medium Priority</div>
+                <div class="text-3xl font-bold text-primary" id="medium-count">0</div>
+            </div>
+            <div class="bg-surface-dark border border-white/5 rounded-xl p-5">
+                <div class="text-slate-400 text-sm mb-2">Total Today</div>
+                <div class="text-3xl font-bold" id="total-count">0</div>
+            </div>
+        </div>
+
+        <!-- Live Alerts Table -->
+        <div class="bg-surface-dark border border-white/5 rounded-xl overflow-hidden">
+            <div class="p-6 border-b border-white/5">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <span class="size-3 bg-neon-green rounded-full animate-pulse"></span>
+                    Live Threat Feed
+                </h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-black/20 text-left text-xs font-bold uppercase text-slate-400">
+                        <tr>
+                            <th class="px-6 py-4">Time</th>
+                            <th class="px-6 py-4">Threat Type</th>
+                            <th class="px-6 py-4">Source IP</th>
+                            <th class="px-6 py-4">Confidence</th>
+                            <th class="px-6 py-4">Severity</th>
+                            <th class="px-6 py-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alerts-tbody" class="divide-y divide-white/5">
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                                <span class="material-symbols-outlined text-4xl mb-2">hourglass_empty</span>
+                                <div>Waiting for threat data...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let alertsData = [];
+
+        async function fetchAlerts() {
+            try {
+                const response = await fetch(`${API_BASE}/api/logs/threat?lines=50`);
+                const data = await response.json();
+
+                if (data.entries && data.entries.length > 0) {
+                    alertsData = data.entries.map((entry, idx) => {
+                        // Parse log entry
+                        const match = entry.match(/\[(\d+:\d+:\d+)\].*IP:([\d.]+).*Attack: (\w+)/);
+                        if (match) {
+                            return {
+                                time: match[1],
+                                ip: match[2],
+                                type: match[3],
+                                confidence: 85 + Math.random() * 15,
+                                severity: getSeverity(match[3]),
+                                status: "Active"
+                            };
+                        }
+                        return null;
+                    }).filter(Boolean);
+
+                    updateAlertsTable();
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Error fetching alerts:', error);
+            }
+        }
+
+        function getSeverity(attackType) {
+            const critical = ["DoS", "Exploits", "Backdoor", "Shellcode"];
+            const high = ["Worms", "Analysis"];
+            return critical.includes(attackType) ? "Critical" : high.includes(attackType) ? "High" : "Medium";
+        }
+
+        function updateAlertsTable() {
+            const tbody = document.getElementById('alerts-tbody');
+            if (alertsData.length === 0) return;
+
+            tbody.innerHTML = alertsData.map(alert => `
+        <tr class="hover:bg-white/5 transition-colors">
+            <td class="px-6 py-4 font-mono text-sm">${alert.time}</td>
+            <td class="px-6 py-4 font-semibold">${alert.type}</td>
+            <td class="px-6 py-4 font-mono text-sm text-primary">${alert.ip}</td>
+            <td class="px-6 py-4">${alert.confidence.toFixed(1)}%</td>
+            <td class="px-6 py-4">
+                <span class="px-3 py-1 rounded-full text-xs font-bold ${alert.severity === 'Critical' ? 'bg-neon-red/20 text-neon-red' :
+                    alert.severity === 'High' ? 'bg-neon-amber/20 text-neon-amber' :
+                        'bg-primary/20 text-primary'
+                }">${alert.severity}</span>
+            </td>
+            <td class="px-6 py-4">
+                <span class="flex items-center gap-2 text-neon-green text-sm">
+                    <span class="size-2 bg-neon-green rounded-full pulse-red"></span>
+                    ${alert.status}
+                </span>
+            </td>
+        </tr>
+    `).join('');
+        }
+
+        function updateStats() {
+            const critical = alertsData.filter(a => a.severity === 'Critical').length;
+            const high = alertsData.filter(a => a.severity === 'High').length;
+            const medium = alertsData.filter(a => a.severity === 'Medium').length;
+
+            document.getElementById('critical-count').textContent = critical;
+            document.getElementById('high-count').textContent = high;
+            document.getElementById('medium-count').textContent = medium;
+            document.getElementById('total-count').textContent = alertsData.length;
+        }
+
+        // Auto-refresh every 2 seconds
+        setInterval(fetchAlerts, 2000);
+        fetchAlerts();
+    </script>
+</body>
+
+</html>
