@@ -98,11 +98,11 @@ A deployable AI-based data center security system that runs on a single node, mo
 
 ### 1. **Start the Server**
 ```
-Access demo at http://localhost:5000
+Access demo at https://aicloud-vha2.onrender.com/
 ```
 
 ### 2. **Open Dashboard**
-Navigate to `http://localhost:5000` in your browser
+Navigate to `https://aicloud-vha2.onrender.com/` in your browser
 
 ### 3. **Simulate Traffic**
 - Use the **Network Traffic Simulator** panel
@@ -126,5 +126,6 @@ Navigate to `http://localhost:5000` in your browser
 ---
 
 **Made with 💙 for Fortex36 by Team SynapseX**
+
 
 
